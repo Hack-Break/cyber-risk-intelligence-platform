@@ -102,8 +102,7 @@ Follow these steps **every time** you want to start the project.
 ### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/hack-break/cyber-risk-platform.git
-
+git clone https://github.com/Hack-Break/cyber-risk-intelligence-platform.git
 cd cyber-risk-platform
 ```
 
