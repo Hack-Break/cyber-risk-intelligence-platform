@@ -1,11 +1,17 @@
-# 🛡️ Cyber Risk Intelligence & Adaptive Defense Platform
+<div align="center">
 
-> A unified intelligent cybersecurity system that monitors threats, correlates attack chains, scores risk dynamically, and recommends adaptive defenses — in real time.
+# 🛡️ CRIDAP
+## Cyber Risk Intelligence & Adaptive Defense Platform
+
+> A unified AI-powered cybersecurity system that monitors threats, correlates attack chains, scores risk dynamically, and recommends adaptive defenses — in real time.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Hackathon%20Build-orange?style=flat-square)
-![ML](https://img.shields.io/badge/ML-Scikit--learn%20%7C%20PyTorch-red?style=flat-square)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-green?style=flat-square&logo=fastapi)
+![ML](https://img.shields.io/badge/ML-Isolation%20Forest%20%7C%20Scikit--learn-red?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Hackathon%20Ready-orange?style=flat-square)
+
+</div>
 
 ---
 
@@ -13,7 +19,7 @@
 
 With increasing complexity of cyber threats, organizations need intelligent systems capable of detecting attacks, prioritizing risks, and protecting sensitive data in real time.
 
-This platform integrates **behavioural analytics**, **dynamic risk scoring**, and **incident correlation** into a single unified cybersecurity solution — going beyond traditional SIEM tools by reconstructing full attack chains and recommending adaptive defenses.
+**CRIDAP** integrates behavioural analytics, dynamic risk scoring, and incident correlation into a single unified cybersecurity solution — going beyond traditional SIEM tools by reconstructing full attack chains and recommending adaptive defenses — all visualized through a live SOC intelligence dashboard.
 
 ---
 
@@ -22,12 +28,12 @@ This platform integrates **behavioural analytics**, **dynamic risk scoring**, an
 | Module | Description |
 |--------|-------------|
 | 🔎 **Multi-Layer Activity Monitor** | Ingests network, auth, and application logs |
-| 🤖 **Behavioural Anomaly Detection** | ML-based detection of lateral movement, credential misuse, traffic anomalies |
+| 🤖 **Behavioural Anomaly Detection** | ML-based detection using Isolation Forest |
 | 🔗 **Attack Chain Correlation** | Links isolated events into full attack timelines |
-| 📊 **Dynamic Risk Scoring** | Per-user, per-device, per-service risk scores |
-| 🔐 **Privacy Risk Monitor** | Detects unauthorized data access and exfiltration signals |
-| ⚠️ **Adaptive Defense Advisor** | Recommends context-aware mitigations (MFA, isolation, patching) |
-| 📡 **Security Intelligence Dashboard** | Unified SOC-facing visualization layer |
+| 📊 **Dynamic Risk Scoring** | Per-user, per-device, per-service risk scores (0–100) |
+| 🔐 **Privacy Risk Monitor** | Detects unauthorized data access and exfiltration |
+| ⚠️ **Adaptive Defense Advisor** | Context-aware mitigations (MFA, isolation, patching) |
+| 📡 **SOC Intelligence Dashboard** | Live 3D cybersecurity visualization with real data |
 
 ---
 
@@ -39,7 +45,7 @@ Data Sources (Network / Identity / Application Logs)
            [ Preprocessing & Normalization Layer ]
                       ↓
        [ Behavioural ML Anomaly Detection Engine ]
-          Isolation Forest | Autoencoder | LSTM
+                Isolation Forest | LSTM
                       ↓
          [ Alert Correlation & Chain Builder ]
                       ↓
@@ -48,7 +54,9 @@ Data Sources (Network / Identity / Application Logs)
                       ↓
     [ Privacy Monitor ]     [ Defense Advisor ]
                       ↓
-         [ Security Intelligence Dashboard ]
+    [ FastAPI REST Backend · http://127.0.0.1:8000 ]
+                      ↓
+         [ Live SOC Intelligence Dashboard ]
 ```
 
 ---
@@ -59,18 +67,22 @@ Data Sources (Network / Identity / Application Logs)
 cyber-risk-platform/
 ├── src/
 │   ├── ingestion/          # Log parsers and data collectors
-│   ├── detection/          # Anomaly detection ML models
+│   ├── detection/          # Isolation Forest anomaly detection
 │   ├── correlation/        # Attack chain correlation engine
 │   ├── scoring/            # Dynamic risk scoring logic
-│   ├── privacy/            # Privacy risk monitoring module
+│   ├── privacy/            # Privacy risk monitoring (5 rules)
 │   ├── advisor/            # Adaptive defense recommendation engine
-│   └── dashboard/          # API + dashboard backend
-├── models/                 # Trained ML model artifacts
+│   └── dashboard/          # FastAPI REST backend
 ├── data/
-│   └── sample_logs/        # Sample log datasets for testing
-├── tests/                  # Unit and integration tests
-├── scripts/                # Setup and utility scripts
-├── docs/                   # Architecture diagrams and documentation
+│   └── sample_logs/
+│       └── sample_events.json   # 40 events · 22 entities
+├── output/                 # Pipeline results (auto-generated)
+├── tests/                  # 10 unit tests
+├── scripts/
+│   └── run_pipeline.py     # Main pipeline runner
+├── docs/
+│   └── architecture.md
+├── index.html              # Live SOC Dashboard (frontend)
 ├── requirements.txt
 ├── docker-compose.yml
 └── README.md
@@ -78,90 +90,187 @@ cyber-risk-platform/
 
 ---
 
-## 🚀 Quick Start
+## 🚀 How to Run
 
-### 1. Clone the repository
+Follow these steps **every time** you want to start the project.
+
+### Prerequisites
+
+- Python 3.10+
+- Git
+
+### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/cyber-risk-platform.git
+git clone https://github.com/hack-break/cyber-risk-platform.git
+
 cd cyber-risk-platform
 ```
 
-### 2. Set up environment
+### Step 2 — Create and activate virtual environment
 
 ```bash
 python -m venv venv
-source venv/bin/activate        # Linux/macOS
-# or
-venv\Scripts\activate           # Windows
-
-pip install -r requirements.txt
 ```
 
-### 3. Run with Docker (recommended)
-
-```bash
-docker-compose up --build
+**Windows (PowerShell):**
+```powershell
+venv\Scripts\activate
 ```
 
-### 4. Run the detection pipeline manually
-
+**Mac / Linux:**
 ```bash
+source venv/bin/activate
+```
+
+### Step 3 — Install dependencies
+
+```powershell
+pip install numpy pandas scikit-learn loguru fastapi uvicorn pydantic
+```
+
+### Step 4 — Run the detection pipeline
+
+```powershell
 python scripts/run_pipeline.py --log-dir data/sample_logs/
 ```
 
+Expected output:
+```
+🛡️  Starting Cyber Risk Intelligence Pipeline
+📥 Step 1: Ingesting logs...       → 40 events loaded
+🤖 Step 2: Anomaly detection...    → 2 anomalies detected
+🔗 Step 3: Attack chains...        → 0 chains identified
+📊 Step 4: Risk scoring...         → 22 entities scored
+🔐 Step 5: Privacy monitoring...   → 86 privacy signals
+⚠️  Step 6: Defense advisor...     → 6 recommendations
+✅ Pipeline complete. Results saved to output/results.json
+```
+
+### Step 5 — Start the API server
+
+```powershell
+uvicorn src.dashboard.api:app --reload
+```
+
+Expected output:
+```
+INFO:     Uvicorn running on http://127.0.0.1:8000
+INFO:     Application startup complete.
+```
+
+### Step 6 — Open the dashboard
+
+Open `index.html` in your browser. The API status bar at the bottom will show 🟢 **API Connected** and all widgets will populate with live data.
+
 ---
 
-## 🧠 ML Models Used
+## ⚡ Quick Start (One Block)
+
+```powershell
+cd cyber-risk-platform
+venv\Scripts\activate
+python scripts/run_pipeline.py --log-dir data/sample_logs/
+uvicorn src.dashboard.api:app --reload
+```
+
+Then open `index.html` in your browser.
+
+---
+
+## 🌐 API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /` | Health check |
+| `GET /docs` | Interactive Swagger UI |
+| `GET /summary` | Pipeline run summary |
+| `GET /risk-scores` | All entity risk scores |
+| `GET /privacy-alerts` | Privacy risk signals |
+| `GET /attack-chains` | Correlated attack chains |
+| `GET /recommendations` | Defense recommendations |
+| `GET /entity/{name}` | Full profile for an entity |
+
+---
+
+## 🧠 ML Models
 
 | Technique | Use Case |
 |-----------|----------|
-| **Isolation Forest** | General anomaly detection on tabular log data |
-| **Autoencoder (PyTorch)** | Reconstruction error-based deep anomaly detection |
-| **LSTM Time-Series Model** | Sequential behaviour deviation detection |
+| **Isolation Forest** | Unsupervised anomaly detection on tabular log data |
 | **Rule-Based Correlation** | Attack chain linking from correlated alerts |
+| **Statistical Thresholds** | Privacy violation signal detection |
 
 ---
 
 ## 📊 Risk Scoring Formula
 
-Each entity (user / device / service) is assigned a **dynamic risk score** from 0–100:
+Each entity is assigned a dynamic risk score from **0 to 100**:
 
 ```
-Risk Score = w1 × Anomaly_Severity
-           + w2 × Alert_Frequency
-           + w3 × Privilege_Level
-           + w4 × Data_Sensitivity_Accessed
-           + w5 × Historical_Incident_Rate
+Risk Score = 0.35 × Anomaly_Severity
+           + 0.20 × Alert_Frequency
+           + 0.15 × Privilege_Level
+           + 0.20 × Data_Sensitivity_Accessed
+           + 0.10 × Historical_Incident_Rate
 ```
 
-Weights are tunable per organization profile.
+| Score Range | Risk Level |
+|-------------|------------|
+| 80 – 100 | 🔴 CRITICAL |
+| 60 – 79 | 🟠 HIGH |
+| 35 – 59 | 🟡 MEDIUM |
+| 0 – 34 | 🟢 LOW |
 
 ---
 
-## 🔐 Privacy Risk Signals
+## 🔐 Privacy Risk Rules
 
-The privacy module flags the following high-risk behaviors:
-
-- Bulk sensitive data downloads (>X MB in Y minutes)
-- Unauthorized database table queries
-- After-hours access to PII-tagged resources
-- Unusual cross-system data movement
-- API calls with abnormal payload sizes
+| Rule | Signal | Severity |
+|------|--------|----------|
+| PRIV-001 | Bulk data download > 200 MB | HIGH |
+| PRIV-002 | Off-hours privileged access | MEDIUM |
+| PRIV-003 | New device accessing sensitive data | HIGH |
+| PRIV-004 | High API call rate + bulk data transfer | CRITICAL |
+| PRIV-005 | Lateral movement + data access | CRITICAL |
 
 ---
 
 ## ⚠️ Defense Recommendations
 
-Based on risk score and attack chain context, the advisor suggests:
-
-| Trigger Condition | Recommended Action |
-|-------------------|--------------------|
-| Score > 80 | Enforce MFA + alert SOC |
+| Trigger | Action |
+|---------|--------|
+| Score ≥ 80 | Enforce MFA + alert SOC |
 | Lateral movement detected | Isolate endpoint immediately |
-| Credential anomaly | Force password reset |
-| Unpatched CVE in active service | Prioritize patch deployment |
-| Bulk data transfer | Block session + flag for review |
+| Score ≥ 60 | Force password reset |
+| Bulk data exfiltration | Block session + flag for review |
+| Score ≥ 35 + high privilege | Revoke elevated privileges |
+
+---
+
+## 📡 Sample Dataset
+
+The platform ships with **40 real-world-simulated events** across **22 entities**:
+
+| Entity Type | Count | Examples |
+|-------------|-------|---------|
+| Users | 17 | john.doe, mike.chen, carlos.mendez |
+| Services | 5 | svc_api_gateway, svc_ml_pipeline |
+| High-risk actors | 4 | mike.chen (score 40), raj.patel, carlos.mendez |
+| Clean users | 10 | alice.smith, priya.sharma, grace.lee |
+
+---
+
+## ❗ Common Errors & Fixes
+
+| Error | Fix |
+|-------|-----|
+| `ModuleNotFoundError: No module named 'src'` | Run from project root folder |
+| `venv\Scripts\activate` not working | Run PowerShell as Administrator |
+| `uvicorn: command not found` | Run `pip install uvicorn` |
+| Dashboard shows `—` dashes | Run pipeline first, then start server |
+| API status bar shows 🔴 red | Start uvicorn server in a separate terminal |
+| `sample_events.json` empty error | Re-download sample_events.json from repo |
 
 ---
 
@@ -171,15 +280,38 @@ Based on risk score and attack chain context, the advisor suggests:
 pytest tests/ -v
 ```
 
+All 10 tests should pass:
+```
+✅ TestAnomalyDetector::test_returns_list
+✅ TestAnomalyDetector::test_empty_input
+✅ TestAnomalyDetector::test_anomaly_has_required_fields
+✅ TestRiskScorer::test_scores_computed
+✅ TestRiskScorer::test_score_range
+✅ TestRiskScorer::test_risk_levels_valid
+✅ TestPrivacyMonitor::test_bulk_download_flagged
+✅ TestPrivacyMonitor::test_clean_event_no_alerts
+✅ TestDefenseAdvisor::test_critical_score_triggers_mfa
+✅ TestDefenseAdvisor::test_low_score_no_critical_actions
+```
+
 ---
 
 ## 📄 Abstract
 
-> With the increasing complexity of cyber threats, organizations require intelligent systems capable of detecting attacks, prioritizing risks, and protecting sensitive data in real time. This project proposes a **Cyber Risk Intelligence and Adaptive Defense Platform** that integrates behavioural analytics, risk scoring, and incident correlation into a unified cybersecurity solution.
->
-> The platform continuously monitors multi-layer system activity including network traffic, authentication events, and application usage patterns. Machine learning based anomaly detection techniques are employed to identify suspicious behaviour such as abnormal login patterns, unusual data transfers, and network reconnaissance activities. Unlike traditional alerting systems, the proposed solution correlates multiple security events to reconstruct potential **attack chains**, enabling better situational awareness for security teams.
->
-> A dynamic cyber risk scoring engine evaluates threat severity associated with users, devices, and services to support prioritized incident response. Additionally, a **privacy risk monitoring module** detects potential data exposure scenarios and unauthorized access to sensitive resources. Based on contextual threat intelligence, the platform provides adaptive defense recommendations such as enforcing MFA, isolating compromised endpoints, or prioritizing vulnerability patching.
+With the increasing complexity of cyber threats, organizations require intelligent systems capable of detecting attacks, prioritizing risks, and protecting sensitive data in real time. This project proposes a **Cyber Risk Intelligence and Adaptive Defense Platform (CRIDAP)** that integrates behavioural analytics, risk scoring, and incident correlation into a unified cybersecurity solution.
+
+The platform continuously monitors multi-layer system activity including network traffic, authentication events, and application usage patterns. Machine learning based anomaly detection techniques are employed to identify suspicious behaviour such as abnormal login patterns, unusual data transfers, and network reconnaissance activities. Unlike traditional alerting systems, the proposed solution correlates multiple security events to reconstruct potential **attack chains**, enabling better situational awareness for security teams.
+
+A dynamic cyber risk scoring engine evaluates threat severity associated with users, devices, and services to support prioritized incident response. Additionally, a **privacy risk monitoring module** detects potential data exposure scenarios and unauthorized access to sensitive resources. Based on contextual threat intelligence, the platform provides adaptive defense recommendations such as enforcing MFA, isolating compromised endpoints, or prioritizing vulnerability patching.
+
+---
+
+## 👨‍💻 Team
+
+| Name | Role | Links |
+|------|------|-------|
+| **Aishwary Vansh** | Full Stack Developer & System Architect | [LinkedIn](https://www.linkedin.com/in/aishwary-vansh/) · [GitHub](https://github.com/aishwary-vansh) |
+| **Sujai Shukla** | Machine Learning Engineer & Threat Analytics Specialist | [LinkedIn](https://www.linkedin.com/in/sujai-shukla-74a3413b6) · [GitHub](https://github.com/Sujaicodes) |
 
 ---
 
@@ -193,7 +325,7 @@ This project was developed as a **hackathon submission** targeting real-world cy
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/new-module`)
-3. Commit your changes (`git commit -m 'Add privacy detection module'`)
+3. Commit your changes (`git commit -m 'Add new detection module'`)
 4. Push to the branch (`git push origin feature/new-module`)
 5. Open a Pull Request
 
@@ -202,3 +334,10 @@ This project was developed as a **hackathon submission** targeting real-world cy
 ## 📜 License
 
 This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+<b>CRIDAP · Cyber Risk Intelligence & Adaptive Defense Platform</b><br/>
+Built with ❤️ for Hackathon 2025
+</div>
