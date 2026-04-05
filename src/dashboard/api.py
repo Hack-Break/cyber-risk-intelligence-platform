@@ -5,6 +5,7 @@ Exposes pipeline results via REST API for the SOC dashboard.
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import json
 
@@ -21,6 +22,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="."), name="static")
+
 RESULTS_PATH = Path("output/results.json")
 
 
@@ -31,9 +34,11 @@ def _load_results() -> dict:
         return json.load(f)
 
 
-@app.get("/", tags=["Health"])
-def health():
-    return {"status": "ok", "service": "Cyber Risk Intelligence Platform"}
+from fastapi.responses import FileResponse
+
+@app.get("/", tags=["Frontend"])
+def serve_frontend():
+    return FileResponse("index.html")
 
 
 @app.get("/summary", tags=["Dashboard"])
